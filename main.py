@@ -15,7 +15,7 @@ def create_app():
 
 	@app.route('/upload', methods=['GET'])
 	def upload():
-		return uploads.uploadFile()
+		return uploads.uploadFile(request)
 
 	return app
 
