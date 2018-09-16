@@ -1,21 +1,28 @@
-from flask import Flask,request, url_for
+from flask import Flask, Request, request, url_for
 from flask import jsonify
 from flask import json
 from flask_api import status
+from io import BytesIO
 
 from libs import uploads
+
+class MyRequest(Request):
+	def _get_file_stream(*args, **kwargs):
+		return BytesIO()
 
 def create_app():
 	app = Flask(__name__)
 	
+	app.request_class = MyRequest
+
 	# / routes
 	@app.route('/', methods=['GET'])
 	def documentation():
 		return jsonify({}), status.HTTP_200_OK
 
-	@app.route('/upload', methods=['GET'])
+	@app.route('/upload', methods=['POST'])
 	def upload():
-		return uploads.uploadFile(request)
+		return uploads.uploadFunction(request)
 
 	return app
 
