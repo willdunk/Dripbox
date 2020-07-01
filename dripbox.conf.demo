@@ -1,6 +1,0 @@
-[Databases]
-MysqlUser: root
-MysqlPassword: password
-MysqlDatabase: dripbox
-MysqlHost: 127.0.0.1
-MysqlPort: 3306
