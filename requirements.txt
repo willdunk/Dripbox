@@ -13,4 +13,5 @@ flask_script
 flask_migrate
 pylint-flask
 psycopg2
-Flask-APScheduler
+werkzeug
+helpers
