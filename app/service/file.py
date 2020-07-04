@@ -8,8 +8,7 @@ import datetime
 from app.utils import get_digest, get_name, get_extension
 import os
 from flask import safe_join
-
-FILE_STORAGE_PATH = os.getenv('FILE_STORAGE_PATH')
+from app.utils.constants import FILE_STORAGE_PATH
 
 class File():
 	def getFiles(self) -> List[FileModel]:

@@ -3,8 +3,7 @@ from flask import send_from_directory
 from app.service import Drip as DripService
 from app.app import api
 import os
-
-FILE_STORAGE_PATH = os.getenv('FILE_STORAGE_PATH')
+from app.utils.constants import FILE_STORAGE_PATH
 
 @api.resource('/drip/<string:file_uuid>')
 class Drip(Resource):
