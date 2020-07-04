@@ -5,7 +5,7 @@ ENVIRONMENT=''
 CONFIG_NAME='default.py'
 MIGRATION_FOLDER='migrations-local'
 EXTERNAL_FILE_STORAGE_PATH='/Users/william/Desktop'
-INTERNAL_FILE_STORAGE_PATH='/mnt/dripbox'
+INTERNAL_FILE_STORAGE_PATH='/mnt/drips'
 
 while getopts n:p:e: option; do
 	case "${option}" in
@@ -19,19 +19,19 @@ case "${ENVIRONMENT}" in
 	prod.)
 		CONFIG_NAME="prod.config.py"
 		MIGRATION_FOLDER="migrations-prod"
-		EXTERNAL_FILE_STORAGE_PATH='/mnt/dripbox/prod'
+		EXTERNAL_FILE_STORAGE_PATH='/mnt/dripbox_volume/prod'
 		;;
 
 	qa.)
 		CONFIG_NAME="qa.config.py"
 		MIGRATION_FOLDER="migrations-qa"
-		EXTERNAL_FILE_STORAGE_PATH='/mnt/dripbox/qa'
+		EXTERNAL_FILE_STORAGE_PATH='/mnt/dripbox_volume/qa'
 		;;
 
 	dev.)
 		CONFIG_NAME="dev.config.py"
 		MIGRATION_FOLDER="migrations-dev"
-		EXTERNAL_FILE_STORAGE_PATH='/mnt/dripbox/dev'
+		EXTERNAL_FILE_STORAGE_PATH='/mnt/dripbox_volume/dev'
 		;;
 esac
 echo ${CONFIG_NAME}
