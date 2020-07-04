@@ -1,24 +1,21 @@
 node {
 	String restartNginx = "sudo /usr/sbin/service nginx restart"
-	def testImage = null
-	String testImageName = 'defaulttestimage'
-	String testDockerfile = "test.Dockerfile"
-	String remoteServer = "paris.williamdunkerley.com"
+	String remoteServer = "dripbox.williamdunkerley.com"
 	String environmentName = null
 	String environmentDockerfile = null
 	String appContainerPort = null
 	if (env.BRANCH_NAME == "master") {
-		environmentName = 'amsterdam';
+		environmentName = 'dripbox';
 		appContainerPort = '56733';
 		environmentOption = 'prod.';
 	}
 	if (env.BRANCH_NAME == "release") {
-		environmentName = 'santiago';
+		environmentName = 'dripbox-qa';
 		appContainerPort = '56734';
 		environmentOption = 'qa.';
 	}
 	if (env.BRANCH_NAME.contains("feature/")) {
-		environmentName = 'prague';
+		environmentName = 'dripbox-dev';
 		appContainerPort = '56735';
 		environmentOption = 'dev.';
 	}
