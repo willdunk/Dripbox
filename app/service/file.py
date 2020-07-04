@@ -5,7 +5,11 @@ from app.model import FileModel
 from app.app import db
 import uuid
 import datetime
-import hashlib
+from app.utils import get_digest, get_name, get_extension
+import os
+from flask import safe_join
+
+FILE_STORAGE_PATH = os.getenv('FILE_STORAGE_PATH')
 
 class File():
 	def getFiles(self) -> List[FileModel]:
@@ -15,26 +19,19 @@ class File():
 		return FileModel.query.filter_by(file_uuid=file_uuid).first()
 
 	def setFile(self, file) -> FileModel:
-		BLOCK_SIZE = 65536  # The size of each read from the file
-
-		# Create the hash object, can use something other than `.sha256()` if you wish
-		file_hash = hashlib.sha256()
-		fb = file.read(BLOCK_SIZE)
-		while len(fb) > 0:  # While there is still data being read from the file
-			file_hash.update(fb)  # Update the hash
-			fb = file.read(BLOCK_SIZE)  # Read the next block from the file
-		
-		print(file_hash.hexdigest())  # Get the hexadecimal digest of the hash
-		
+		digest = get_digest(file)
 		f = FileModel(
 			file_uuid=str(uuid.uuid4()),
-			file_name=str(file.filename),
-			file_extension=str("py"),
+			file_name=str(get_name(file)),
+			file_extension=str(get_extension(file)),
 			date_uploaded=datetime.datetime.now(),
 			date_modified=datetime.datetime.now(),
-			file_hash=str(uuid.uuid4()),
-			source_identifier=str(uuid.uuid4())
+			file_digest=str(digest),
+			source_identifier=str(digest+'.dripbox')
 		)
+		file.seek(0)
+		file_path = os.path.abspath(safe_join(FILE_STORAGE_PATH, digest))
+		file.save(file_path)
 		db.session.add(f)
 		db.session.commit()
 		return f
