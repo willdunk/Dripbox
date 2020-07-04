@@ -30,7 +30,7 @@ class File():
 			source_identifier=str(digest+'.dripbox')
 		)
 		file.seek(0)
-		file_path = os.path.abspath(safe_join(FILE_STORAGE_PATH, digest))
+		file_path = os.path.abspath(safe_join(FILE_STORAGE_PATH, digest+'.dripbox'))
 		file.save(file_path)
 		db.session.add(f)
 		db.session.commit()
