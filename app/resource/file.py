@@ -28,9 +28,11 @@ class File(Resource):
 	def post(self):
 		parse = reqparse.RequestParser()
 		parse.add_argument('user_file', type=FileStorage, location='files', action='append')
+		parse.add_argument('secret')
 		args = parse.parse_args()
 		files = args['user_file']
+		secret = args['secret']
 		files_processed = [];
 		for file in files:
-			files_processed.append(self.service.setFile(file))
+			files_processed.append(self.service.setFile(file, secret))
 		return files_processed

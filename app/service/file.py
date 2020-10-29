@@ -1,8 +1,9 @@
-from flask_restful import Resource
+from flask_restful import abort, Resource
 from app.app import api
 from typing import List
 from app.model import FileModel
 from app.app import db
+from app.app import app
 import uuid
 import datetime
 from app.utils import get_digest, get_name, get_extension
@@ -17,7 +18,10 @@ class File():
 	def getFile(self, file_uuid) -> FileModel:
 		return FileModel.query.filter_by(file_uuid=file_uuid).first()
 
-	def setFile(self, file) -> FileModel:
+	def setFile(self, file, secret) -> FileModel:
+		true_secret = app.config['POSTGRES']['pw']
+		if secret != true_secret:
+			abort(401, message="Incorrect Secret")
 		digest = get_digest(file)
 		f = FileModel(
 			file_uuid=str(uuid.uuid4()),
