@@ -29,16 +29,8 @@ class User():
 		except:
 			return {'message': 'Something went wrong'}, 500
 	
-	def getUsers(self) -> List[UserModel]:
-		return UserModel.query.order_by(UserModel.username).all()
-
-	def deleteUsers(self):
-		try:
-			n = db.session.query(UserModel).delete()
-			db.session.commit()
-			return {'message': '{} row(s) deleted'.format(n)}
-		except:
-			return {'message': 'Something went wrong'}
+	def getUser(self, username) -> UserModel:
+		return UserModel.query.filter_by(username=username).first()
 
 	def loginUser(self, data):
 		username = data['username']

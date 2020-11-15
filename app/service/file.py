@@ -1,7 +1,7 @@
 from flask_restful import abort, Resource
 from app.app import api
 from typing import List
-from app.model import FileModel
+from app.model import FileModel, UserModel
 from app.app import db
 from app.app import app
 import uuid
@@ -10,18 +10,23 @@ from app.utils import get_digest, get_name, get_extension
 import os
 from flask import safe_join
 from app.utils.constants import FILE_STORAGE_PATH
+from flask_jwt_extended import jwt_required
 
 class File():
-	def getFiles(self) -> List[FileModel]:
-		return FileModel.query.order_by(FileModel.file_name).all()
+	def getFile(self, file_uuid, username) -> FileModel:
+		file = FileModel.query.filter_by(file_uuid=file_uuid).first()
+		if username:
+			user = UserModel.query.filter_by(username=username).first()
+			if user.id == file.owner:
+				return file
+			else:
+				abort(403, message="Forbidden")
+		elif file.public:
+			return file
+		else:
+			abort(401, message="Unauthenticated")
 
-	def getFile(self, file_uuid) -> FileModel:
-		return FileModel.query.filter_by(file_uuid=file_uuid).first()
-
-	def setFile(self, file, secret) -> FileModel:
-		true_secret = app.config['POSTGRES']['pw']
-		if secret != true_secret:
-			abort(401, message="Incorrect Secret")
+	def setFile(self, file, username, is_public) -> FileModel:
 		digest = get_digest(file)
 		f = FileModel(
 			file_uuid=str(uuid.uuid4()),
@@ -30,7 +35,9 @@ class File():
 			date_uploaded=datetime.datetime.now(),
 			date_modified=datetime.datetime.now(),
 			file_digest=str(digest),
-			source_identifier=str(digest+'.dripbox')
+			source_identifier=str(digest+'.dripbox'),
+			owner=int(UserModel.query.filter_by(username=username).first().id),
+			public=bool(is_public)
 		)
 		file.seek(0)
 		file_path = os.path.abspath(safe_join(FILE_STORAGE_PATH, digest+'.dripbox'))

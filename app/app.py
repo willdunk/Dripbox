@@ -16,6 +16,4 @@ app.config['JWT_BLACKLIST_TOKEN_CHECKS'] = ['access', 'refresh']
 jwt = JWTManager(app)
 db = SQLAlchemy(app)
 
-from app.resource import Drip as DripResource
-from app.resource import File as FileResource
-from app.resource import UserRegistration, UserLogin, UserLogoutAccess, UserLogoutRefresh, TokenRefresh, AllUsers, SecretResource 
+from app.resource import *
