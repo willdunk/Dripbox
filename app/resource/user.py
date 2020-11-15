@@ -17,10 +17,15 @@ class UserRegistration(Resource):
 	def post(self):
 		return self.service.registerUser(parser.parse_args())
 
-@api.resource('/login')
-class UserLogin(Resource):
+@api.resource('/user')
+class User(Resource):
 	def __init__(self):
 		self.service = UserService()
+
+	@jwt_required
+	@marshal_with(user_fields)
+	def get(self, get_jwt_identity):
+		return self.service.getUser()
 
 	def post(self):
 		return self.service.loginUser(parser.parse_args())
@@ -51,13 +56,3 @@ class UserLogoutRefresh(Resource):
 	@jwt_refresh_token_required
 	def post(self):
 		return self.service.logoutUserRefresh()
-
-@api.resource('/user')
-class User(Resource):
-	def __init__(self):
-		self.service = UserService()
-
-	@jwt_required
-	@marshal_with(user_fields)
-	def get(self, get_jwt_identity):
-		return self.service.getUser()
