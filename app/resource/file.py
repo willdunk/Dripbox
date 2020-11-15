@@ -3,7 +3,6 @@ from app.service import File as FileService
 from app.app import api
 from werkzeug.datastructures import FileStorage
 from werkzeug.utils import secure_filename
-import helpers
 
 file_fields = {
 	'file_uuid': fields.String,
