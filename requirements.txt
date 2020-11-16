@@ -15,3 +15,5 @@ pylint-flask
 psycopg2
 werkzeug
 helpers
+flask-jwt-extended
+passlib

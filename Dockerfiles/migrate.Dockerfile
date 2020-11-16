@@ -9,4 +9,4 @@ ENV APP_CONFIG_FILE /etc/flask/app/$CONFIG_NAME
 COPY ./ /app
 ARG MIGRATION_FOLDER
 ENV MIGRATION_FOLDER=$MIGRATION_FOLDER
-CMD python3 -B /app/manage.py db migrate --directory=/app/$MIGRATION_FOLDER && python3 -B /app/manage.py db upgrade --directory=/app/$MIGRATION_FOLDER 
+ENTRYPOINT ["/bin/bash", "/app/migrate.sh"]
