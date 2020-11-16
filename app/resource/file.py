@@ -7,7 +7,7 @@ from flask_jwt_extended import jwt_required, jwt_optional, get_jwt_identity
 from app.utils import file_fields
 
 @api.resource('/file')
-class SetFile(Resource):
+class NewFile(Resource):
 	def __init__(self):
 		self.service = FileService()
 
@@ -27,7 +27,7 @@ class SetFile(Resource):
 		return files_processed
 
 @api.resource('/file/<string:file_uuid>')
-class GetFile(Resource):
+class File(Resource):
 	def __init__(self):
 		self.service = FileService()
 
@@ -35,3 +35,14 @@ class GetFile(Resource):
 	@marshal_with(file_fields)
 	def get(self, file_uuid):
 		return self.service.getFile(file_uuid, get_jwt_identity())
+
+	@jwt_required
+	@marshal_with(file_fields)
+	def post(self, file_uuid):
+		parse = reqparse.RequestParser()
+		parse.add_argument('user_file', type=FileStorage, location='files', action='append')
+		parse.add_argument('public')
+		args = parse.parse_args()
+		updated_file = args['user_file'][0]
+		is_public = bool(args['public'])
+		return self.service.updateFile(file_uuid, updated_file, get_jwt_identity(), is_public)

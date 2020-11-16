@@ -45,3 +45,21 @@ class File():
 		db.session.add(f)
 		db.session.commit()
 		return f
+	
+	def updateFile(self, file_uuid, updated_file, username, is_public) -> FileModel:
+		user = UserModel.query.filter_by(username=username).first()
+		file = FileModel.query.filter_by(file_uuid=file_uuid).first()
+		if user.id == file.owner:
+			digest = get_digest(updated_file)
+			if digest != file.file_digest:
+				file.file_digest = str(digest)
+				file.source_identifier = str(digest+'.dripbox'),
+			file.file_name = str(get_name(updated_file))
+			file.file_extension = str(get_extension(updated_file))
+			file.date_modified = datetime.datetime.now()
+			public=bool(is_public)
+			updated_file.seek(0)
+			updated_file.save(os.path.abspath(safe_join(FILE_STORAGE_PATH, digest+'.dripbox')))
+			db.session.commit()
+			return file
+		abort(403, message="Forbidden")
