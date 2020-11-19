@@ -1,5 +1,4 @@
-from flask_restful import abort, Resource
-from app.app import api
+from flask_restx import abort
 from typing import List
 from app.model import FileModel, UserModel
 from app.app import db

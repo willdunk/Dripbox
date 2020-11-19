@@ -1,4 +1,4 @@
-from flask_restful import Resource, reqparse, marshal_with 
+from flask_restx import Resource, reqparse, marshal_with 
 from app.app import api
 from app.model import UserModel, RevokedTokenModel
 from flask_jwt_extended import jwt_required, jwt_refresh_token_required, get_jwt_identity
@@ -9,50 +9,39 @@ parser = reqparse.RequestParser()
 parser.add_argument('username', help='This field cannot be blank', required=True)
 parser.add_argument('password', help='This field cannot be blank', required=True)
 
-@api.resource('/registration')
+@api.route('/registration')
 class UserRegistration(Resource):
-	def __init__(self):
-		self.service = UserService()
-
+	@api.doc(security=None)
+	@api.expect(parser)
 	def post(self):
-		return self.service.registerUser(parser.parse_args())
+		return UserService().registerUser(parser.parse_args())
 
-@api.resource('/user')
+@api.route('/user')
 class User(Resource):
-	def __init__(self):
-		self.service = UserService()
-
 	@jwt_required
-	@marshal_with(user_fields)
-	def get(self, get_jwt_identity):
-		return self.service.getUser()
+	@api.marshal_with(user_fields)
+	def get(self):
+		return UserService().getUser(get_jwt_identity())
 
+	@api.doc(security=None)
+	@api.expect(parser)
 	def post(self):
-		return self.service.loginUser(parser.parse_args())
+		return UserService().loginUser(parser.parse_args())
 
-@api.resource('/logout/access')
+@api.route('/logout/access')
 class UserLogoutAccess(Resource):
-	def __init__(self):
-		self.service = UserService()
-
 	@jwt_required
 	def post(self):
-		return self.service.logoutUserAccess()
+		return UserService().logoutUserAccess()
 
-@api.resource('/token/refresh')
+@api.route('/token/refresh')
 class TokenRefresh(Resource):
-	def __init__(self):
-		self.service = UserService()
-
 	@jwt_refresh_token_required
 	def post(self):
-		return self.service.tokenRefresh()
+		return UserService().tokenRefresh()
 
-@api.resource('/logout/refresh')
+@api.route('/logout/refresh')
 class UserLogoutRefresh(Resource):
-	def __init__(self):
-		self.service = UserService()
-
 	@jwt_refresh_token_required
 	def post(self):
-		return self.service.logoutUserRefresh()
+		return UserService().logoutUserRefresh()
