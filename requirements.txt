@@ -1,7 +1,6 @@
 uwsgi
 Flask==1.1.0
 flask-cors
-flask_restful
 pytest
 pytest-cov
 feedparser
@@ -17,3 +16,4 @@ werkzeug
 helpers
 flask-jwt-extended
 passlib
+flask_restx

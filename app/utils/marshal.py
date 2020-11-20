@@ -1,14 +1,15 @@
-from flask_restful import fields
+from flask_restx import fields
+from app.app import api
 
-file_fields = {
+file_fields = api.model('File', {
 	'file_uuid': fields.String,
 	'file_name': fields.String,
 	'file_extension': fields.String,
 	'date_uploaded': fields.DateTime(dt_format='rfc822'),
 	'date_modified': fields.DateTime(dt_format='rfc822'),
-}
+})
 
-user_fields = {
+user_fields = api.model('User', {
 	'username': fields.String,
-	'files': fields.Nested(file_fields)
-}
+	'files': fields.List(fields.Nested(file_fields))
+})

@@ -1,14 +1,15 @@
-from flask_restful import Resource
-from app.app import api
-from typing import List
 from app.model import FileModel
-from app.app import db
-import uuid
-import datetime
-from app.utils import get_digest, get_name, get_extension
-import os
-from flask import safe_join
+from flask_restx import abort
+from app.utils.constants import FILE_STORAGE_PATH
+from flask import send_from_directory
 
 class Drip():
 	def getDrip(self, file_uuid):
-		return FileModel.query.filter_by(file_uuid=file_uuid).first()
+		file = FileModel.query.filter_by(file_uuid=file_uuid).first()
+		if file:
+			return send_from_directory(
+				FILE_STORAGE_PATH,
+				file.source_identifier,
+				as_attachment=True,
+				attachment_filename=".".join([file.file_name, file.file_extension]))
+		abort(404, message="Not Found")

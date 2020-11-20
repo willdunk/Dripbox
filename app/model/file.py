@@ -1,4 +1,4 @@
-from app.app import app, db
+from app.app import db
 from .base import BaseModel
 from sqlalchemy.schema import ForeignKey
 
