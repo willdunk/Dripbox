@@ -5,7 +5,7 @@ from passlib.hash import pbkdf2_sha256 as sha256
 from flask_jwt_extended import create_access_token, create_refresh_token, get_raw_jwt, get_jwt_identity
 
 class User():
-	def registerUser(self, data):
+	def register(self, data):
 		username = data['username']
 		password = data['password']
 		if UserModel.query.filter_by(username=username).first():
@@ -29,10 +29,10 @@ class User():
 		except:
 			return {'message': 'Something went wrong'}, 500
 	
-	def getUser(self, username) -> UserModel:
+	def get(self, username) -> UserModel:
 		return UserModel.query.filter_by(username=username).first()
 
-	def loginUser(self, data):
+	def login(self, data):
 		username = data['username']
 		password = data['password']
 		current_user = UserModel.query.filter_by(username=username).first()
@@ -51,7 +51,7 @@ class User():
 		else:
 			return {'message': 'Wrong credentials'}
 
-	def logoutUserAccess(self):
+	def logoutAccess(self):
 		jti = get_raw_jwt()['jti']
 		try:
 			revoked_token = RevokedTokenModel(jti=jti)
@@ -61,7 +61,7 @@ class User():
 		except:
 			return {'message': 'Something went wrong'}, 500
 
-	def logoutUserRefresh(self):
+	def logoutRefresh(self):
 		jti = get_raw_jwt()['jti']
 		try:
 			revoked_token = RevokedTokenModel(jti=jti)
