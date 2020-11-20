@@ -21,16 +21,12 @@ class PatchedApi(Api):
 	def specs_url(self):
 		return url_for(self.endpoint('specs'))
 
-
-api_blueprint = Blueprint('api_v1', __name__, url_prefix='/api/v1')
-api = PatchedApi(api_blueprint, title='Test API', version='1.0.0')
-
 app = Flask(__name__, instance_relative_config=True)
 CORS(app)
 # app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_proto=1, x_host=1, x_port=1)
 
 blueprint = Blueprint('api', __name__, url_prefix='/api/v1')
-api = Api(blueprint, doc='/doc/', title="Dripbox", authorizations=authorizations, security='jwt')
+api = PatchedApi(blueprint, doc='/doc/', title="Dripbox", authorizations=authorizations, security='jwt')
 
 app.register_blueprint(blueprint)
 
