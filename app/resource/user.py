@@ -10,30 +10,32 @@ parser = reqparse.RequestParser()
 parser.add_argument('username', help='This field cannot be blank', required=True)
 parser.add_argument('password', help='This field cannot be blank', required=True)
 
-@api.route('/registration')
-class UserRegistration(Resource):
+@api.route('/register')
+class Register(Resource):
 	@api.doc(security=None)
 	@api.expect(parser)
 	def post(self):
-		return UserService().registerUser(parser.parse_args())
+		return UserService().register(parser.parse_args())
 
-@api.route('')
-class User(Resource):
+@api.route('/login')
+class Login(Resource):
+	@api.doc(security=None)
+	@api.expect(parser)
+	def post(self):
+		return UserService().login(parser.parse_args())
+
+@api.route('/info')
+class Info(Resource):
 	@jwt_required
 	@api.marshal_with(user_fields)
 	def get(self):
-		return UserService().getUser(get_jwt_identity())
-
-	@api.doc(security=None)
-	@api.expect(parser)
-	def post(self):
-		return UserService().loginUser(parser.parse_args())
+		return UserService().get(get_jwt_identity())
 
 @api.route('/logout/access')
-class UserLogoutAccess(Resource):
+class LogoutAccess(Resource):
 	@jwt_required
 	def post(self):
-		return UserService().logoutUserAccess()
+		return UserService().logoutAccess()
 
 @api.route('/token/refresh')
 class TokenRefresh(Resource):
@@ -42,7 +44,7 @@ class TokenRefresh(Resource):
 		return UserService().tokenRefresh()
 
 @api.route('/logout/refresh')
-class UserLogoutRefresh(Resource):
+class LogoutRefresh(Resource):
 	@jwt_refresh_token_required
 	def post(self):
-		return UserService().logoutUserRefresh()
+		return UserService().logoutRefresh()
