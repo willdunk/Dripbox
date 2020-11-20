@@ -16,7 +16,7 @@ authorizations = {
 
 app = Flask(__name__, instance_relative_config=True)
 CORS(app)
-app.wsgi_app = ProxyFix(app.wsgi_app)
+app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_proto=1, x_host=1, x_port=1)
 
 blueprint = Blueprint('api', __name__, url_prefix='/api/v1')
 api = Api(blueprint, doc='/doc/', title="Dripbox", authorizations=authorizations, security='jwt')
