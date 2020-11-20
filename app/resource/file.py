@@ -1,4 +1,4 @@
-from flask_restx import Resource, reqparse
+from flask_restx import Resource, reqparse, Namespace
 from app.service import File as FileService
 from app.app import api
 from werkzeug.datastructures import FileStorage
@@ -6,11 +6,13 @@ from werkzeug.utils import secure_filename
 from flask_jwt_extended import jwt_required, jwt_optional, get_jwt_identity
 from app.utils import file_fields
 
+api = Namespace('file', description='File operations')
+
 parser = reqparse.RequestParser()
 parser.add_argument('user_file', type=FileStorage, location='files', action='append')
 parser.add_argument('public', type=bool)
 
-@api.route('/file')
+@api.route('')
 class NewFile(Resource):
 	@jwt_required
 	@api.expect(parser)
@@ -23,7 +25,7 @@ class NewFile(Resource):
 			files_processed.append(FileService().setFile(file, username, 'public'))
 		return files_processed
 
-@api.route('/file/<string:file_uuid>')
+@api.route('/<string:file_uuid>')
 class File(Resource):
 	@jwt_optional
 	@api.marshal_with(file_fields)

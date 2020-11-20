@@ -31,4 +31,9 @@ app.config['RESTX_MASK_SWAGGER'] = False
 jwt = JWTManager(app)
 db = SQLAlchemy(app)
 
-from app.resource import *
+from app.resource.user import api as user_ns
+from app.resource.file import api as file_ns
+from app.resource.drip import api as drip_ns
+api.add_namespace(user_ns)
+api.add_namespace(file_ns)
+api.add_namespace(drip_ns)

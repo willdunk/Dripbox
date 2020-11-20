@@ -1,17 +1,16 @@
-from flask_restx import Resource
+from flask_restx import Resource, Namespace
 from flask import send_from_directory
 from app.service import Drip as DripService
 from app.app import api
 import os
 from app.utils.constants import FILE_STORAGE_PATH
 
-@api.route('/drip/<string:file_uuid>')
-class Drip(Resource):
-	def __init__(self):
-		self.service = DripService()
+api = Namespace('drip', description='Drip operations')
 
+@api.route('/<string:file_uuid>')
+class Drip(Resource):
 	def get(self, file_uuid):
-		drip = self.service.getDrip(file_uuid)
+		drip = DripService().getDrip(file_uuid)
 		return send_from_directory(
 			FILE_STORAGE_PATH,
 			drip.source_identifier,
