@@ -1,5 +1,5 @@
 uwsgi
-Flask==1.1.0
+Flask==2.3.2
 flask-cors
 pytest
 pytest-cov
